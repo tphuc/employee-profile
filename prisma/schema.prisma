@@ -1,0 +1,41 @@
+// schema.prisma
+
+datasource db {
+    provider = "postgresql" // or any other supported database
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Employee {
+    id            Int            @id @default(autoincrement())
+    name          String
+    description   String?
+    images        Json?
+    positions     Position[]
+    toolLanquages ToolLanguage[]
+}
+
+model Position {
+    id            Int            @id @default(autoincrement())
+    name          String
+    description   String?
+    toolLanguages ToolLanguage[] // A position can have multiple tool languages
+    displayOrder  Int
+    employees     Employee[]
+}
+
+model ToolLanguage {
+    id           Int       @id @default(autoincrement())
+    name         String
+    description  String?
+    positionId   Int
+    from         Int
+    to           Int
+    displayOrder Int
+    position     Position  @relation(fields: [positionId], references: [id])
+    employee     Employee? @relation(fields: [employeeId], references: [id])
+    employeeId   Int?
+}
